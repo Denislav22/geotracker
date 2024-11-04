@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Живо местоположение</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Инициализиране на картата
+        const map = L.map('map').setView([42.6977, 23.3219], 13); // Позиция на София
+
+        // Добавяне на слой с карта
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Добавяне на маркер за текущото местоположение
+        const marker = L.marker([42.6977, 23.3219]).addTo(map); // Позиция на маркера
+
+        // Функция за актуализиране на местоположението
+        function updateLocation(lat, lon) {
+            marker.setLatLng([lat, lon]);
+            map.setView([lat, lon]);
+        }
+
+        // Инициализиране на геолокацията
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(position => {
+                const { latitude, longitude } = position.coords;
+                updateLocation(latitude, longitude);
+            }, () => {
+                alert("Не мога да получа вашето местоположение.");
+            });
+        } else {
+            alert("Геолокацията не е поддържана от вашия браузър.");
+        }
+    </script>
+</body>
+</html>
